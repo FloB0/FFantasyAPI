@@ -1,12 +1,9 @@
 from fastapi import FastAPI
+#comment
 
 app = FastAPI()
 
 
 @app.get("/")
 async def root():
-    return {"message": "Hello Flo"}
-
-@app.get("/Team")
-async def getTeam():
-    return {"team": "Flo's Fantasy Team"}
+    return {"message": "Hello World"}
