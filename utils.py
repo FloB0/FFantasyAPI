@@ -7,6 +7,20 @@ def getTimeFromTimestamp(timestamp):
     formatted_date = dt_object.strftime('%Y-%m-%d %H:%M:%S')
     print(formatted_date)
 
+def responseBuilder(args):
+    header = {
+
+        }
+    params = {
+
+        }
+    url = args['url']
+    return_ = {
+        'header': header,
+        'params': params,
+        'url': url
+        }
+    return return_
 
 def getLeagueStandings(leagueId):
     url = 'https://stage.api.fantasy.nfl.com/v3/leagues/{leagueId}/standings'.format(leagueId)
