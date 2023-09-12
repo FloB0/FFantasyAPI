@@ -1,4 +1,10 @@
 import datetime
+from getToken import get_AaccessToken
+
+
+def getBearerToken():
+    bToken_ = 'Bearer ' + get_AaccessToken().json()['accessToken']
+    return bToken_
 
 
 def getTimeFromTimestamp(timestamp):
