@@ -1,52 +1,53 @@
 import datetime
 from getToken import get_AaccessToken
 from getLeagueData import getData
+from endpoints import *
 
-def getBearerToken():
+
+def get_bearer_token():
     bToken_ = 'Bearer ' + get_AaccessToken().json()['accessToken']
     return bToken_
 
 
-def getTimeFromTimestamp(timestamp):
+def get_time_from_timestamp(timestamp):
     dt_object = datetime.datetime.fromtimestamp(timestamp)
     print(dt_object)
     formatted_date = dt_object.strftime('%Y-%m-%d %H:%M:%S')
     print(formatted_date)
 
 
-def responseBuilder(args):
-    header = {}
-    params = {}
-    url = args['url']
+def build_url(base_url_, endpoint, **kwargs):
+    full_url_pattern = "{}/{}".format(base_url_.rstrip('/'), endpoint.lstrip('/'))
+    return full_url_pattern.format(**kwargs)
+
+
+def get_url(base_url_, functionality, data, method="GET"):
+    if method == "GET":
+        endpoint = GET_ENDPOINTS.get(functionality)
+    elif method == "POST":
+        endpoint = POST_ENDPOINTS.get(functionality)
+    else:
+        raise ValueError(f"Unsupported method: {method}")
+
+    if not endpoint:
+        raise ValueError(f"No endpoint found for functionality: {functionality}")
+
+    return build_url(base_url_, endpoint, **data)
+
+
+def response_builder(dict_, functionality):
+    header = {
+        "Authorization": get_bearer_token()
+        }
+    params = {
+        'appKey': dict_['appKey'],
+        'leagueId': dict_['leagueId']
+        }
+    print(getData()['base_url'])
+    url = get_url(base_url_=getData()['base_url'], functionality=functionality, data=getData(), method='GET')
     return_ = {
         'header': header,
         'params': params,
         'url': url
         }
     return return_
-
-
-def getLeagueStandings(leagueId):
-    base_url_ = getData()['base_url']
-    endpoint_ = '/leagues/{leagueId}/standings'
-    url_ = base_url_ + endpoint_
-    final_url = url_.format(leagueId=leagueId)
-    return final_url
-
-
-def getLeagueStandingsForGame(gameId, leagueId):
-    base_url_ = getData()['base_url']
-    endpoint_ = '/games/{gameId}/leagues/{leagueId}/standings'
-    url_ = base_url_ + endpoint_
-    final_url = url_.format(gameId=gameId, leagueId=leagueId)
-    return final_url
-
-def getLeagueSeasonStats(leagueId):
-    base_url_ = getData()['base_url']
-    endpoint_ = '/games/{gameId}/leagues/{leagueId}/standings'
-    url_ = base_url_ + endpoint_
-    url = 'https://stage.api.fantasy.nfl.com/v3/leagues/{leagueId}/seasonstats'.format(leagueId=leagueId)
-
-def getLeagueStatsForGame(gameId, leagueId):
-    url = 'https://stage.api.fantasy.nfl.com/v3/games/{gameId}/leagues/{leagueId}/seasonstats'.format(gameId=gameId, leagueId=leagueId)
-    return url
